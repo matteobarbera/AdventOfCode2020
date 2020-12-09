@@ -21,22 +21,24 @@ def day4_part1():
         return valid_passports
 
 
+fields = {
+    'byr': lambda x: 1920 <= int(x) <= 2002,
+    'iyr': lambda x: 2010 <= int(x) <= 2020,
+    'eyr': lambda x: 2020 <= int(x) <= 2030,
+    'hcl': lambda x: re.fullmatch(r"#[\da-z]{6}", x),
+    'ecl': lambda x: x in ('amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'),
+    'pid': lambda x: re.fullmatch(r'^\d{9}', x),
+    'hgt': lambda x: (x.endswith('cm') and 150 <= int(x[:-2]) <= 193) or
+                     (x.endswith('in') and 59 <= int(x[:-2]) <= 76)
+}
+
+
 def is_passport_valid(passport):
     try:
         if len(passport.keys()) >= 7:
-            if passport['ecl'] in ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'] and len(passport['ecl']) == 3:
-                if 1920 <= int(passport['byr']) <= 2002:
-                    if 2010 <= int(passport['iyr']) <= 2020:
-                        if 2020 <= int(passport['eyr']) <= 2030:
-                            if re.match(r"#[\da-z]{6} *", passport['hcl']) is not None:
-                                if re.match(r"^\d{9}(?!\d)", passport['pid']) is not None:
-                                    height = re.match(r"(?P<height>\d+)(?P<unit>[a-z]+)", passport['hgt'])
-                                    if height is not None:
-                                        if height.group('unit') == 'cm' and 150 <= int(height.group('height')) <= 193:
-                                            return True
-                                        elif height.group('unit') == 'in' and 59 <= int(height.group('height')) <= 76:
-                                            return True
-    except (KeyError, ValueError):
+            if all([check(passport[field]) for field, check in fields.items()]):
+                return True
+    except KeyError:
         return False
     return False
 
