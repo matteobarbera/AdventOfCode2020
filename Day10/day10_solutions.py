@@ -10,7 +10,6 @@ def day10_part1():
 
 
 def day10_part2():
-    # FIXME it's more complicated than the understanding used for this attempt
     with open("day10_input.txt") as f:
         adapters = sorted([int(line) for line in f])
     adapters.insert(0, 0)
@@ -23,14 +22,12 @@ def day10_part2():
             streak += 1
         else:
             if streak > 1:
-                arrangements.append(streak + 1)
+                arrangements.append(streak - 1)
             streak = 0
-    print(arrangements)
+    combs_dict = {1: 2, 2: 4, 3: 7}
     tot = 1
     for n in arrangements:
-        for i in range(n, 0, -1):
-            tot *= i
-            tot += i
+        tot *= combs_dict[n]
     return tot
 
 
