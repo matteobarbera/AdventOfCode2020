@@ -1,4 +1,4 @@
-import re
+from itertools import product
 
 
 def process_line():
@@ -18,6 +18,20 @@ def apply_bitmask(mask, num):
     return int("".join(binary), 2)
 
 
+def apply_bitmask_v2(mask, address):
+    binary_address = "{:b}".format(int(address))  # convert to binary without 0b
+    binary_address = [*binary_address.zfill(36)]  # pad to match bitmask length
+    for i, m_bit in enumerate(mask):
+        if m_bit != "0":  # override 1 and X
+            binary_address[i] = m_bit
+    floating_bits = binary_address.count("X")
+    floating_address = "".join(binary_address).replace("X", "{}")  # prepare for format
+    # Loop over all possible combinations of floating bits
+    for bits in product(range(2), repeat=floating_bits):
+        new_address = floating_address.format(*bits)
+        yield int(new_address, 2)
+
+
 def day14_part1():
     initialization_values = {}
     mask = None
@@ -25,7 +39,7 @@ def day14_part1():
         if c == "mask":
             mask = v
         else:
-            address = re.match(r"mem\[(\d+)", c)[1]
+            address = c[4:-1]
             initialization_values[address] = apply_bitmask(mask, v)
     sum = 0
     for val in initialization_values.values():
@@ -34,7 +48,19 @@ def day14_part1():
 
 
 def day14_part2():
-    pass
+    initialization_values = {}
+    mask = None
+    for c, v in process_line():
+        if c == "mask":
+            mask = v
+        else:
+            address = c[4:-1]
+            for addr in apply_bitmask_v2(mask, address):
+                initialization_values[addr] = int(v)
+    sum = 0
+    for val in initialization_values.values():
+        sum += val
+    return sum
 
 
 if __name__ == "__main__":
