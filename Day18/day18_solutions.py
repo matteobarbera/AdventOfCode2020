@@ -53,9 +53,12 @@ def day18_part2():
         eval_sum = 0
         for i, line in enumerate(f):
             expression = line.strip()
+            # Identify inner-most brackets and replace them with
+            # integer after evaluating them
             while match := re.search(pattern, expression):
                 bracket_eval = str(calculate_advanced((match[0]).strip("()")))
                 expression = re.sub(pattern, bracket_eval, expression, count=1)
+            # catch edge case where whole expression was between brackets
             if len(expression.split()) > 2:
                 eval_sum += calculate_advanced(expression)
             else:
