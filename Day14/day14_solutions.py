@@ -66,5 +66,5 @@ def day14_part2():
 if __name__ == "__main__":
     print("=" * 10 + " Part 1 " + "=" * 10)
     print(f"Sum of initialization values: {day14_part1()}")
-    print("=" * 10 + " Part 1 " + "=" * 10)
+    print("=" * 10 + " Part 2 " + "=" * 10)
     print(f"Sum of initialization values: {day14_part2()}")
